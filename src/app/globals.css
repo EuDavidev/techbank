@@ -1,26 +1,71 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sora), 'Sora', system-ui, -apple-system, sans-serif;
+  --font-sora: var(--font-sora), 'Sora', system-ui, -apple-system, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #080c14;
+  --foreground: #f1f5f9;
+  --card: #0f172a;
+  --card-border: #1e293b;
+  --card-foreground: #f8fafc;
+  --primary-orange: #ff6a00;
+  --primary-orange-hover: #ea580c;
+  --primary-orange-glow: rgba(255, 106, 0, 0.25);
+  --success: #10b981;
+  --danger: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #080c14;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(255, 106, 0, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.05) 0px, transparent 40%),
+    radial-gradient(at 50% 100%, rgba(255, 106, 0, 0.04) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: #f1f5f9;
+  min-height: 100vh;
+  font-family: var(--font-sora), 'Sora', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0b1120;
+}
+::-webkit-scrollbar-thumb {
+  background: #27354a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ff6a00;
+}
+
+/* Glow effects for orange buttons */
+.btn-orange-glow {
+  box-shadow: 0 4px 20px -2px rgba(255, 106, 0, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-orange-glow:hover {
+  box-shadow: 0 6px 25px 0 rgba(255, 106, 0, 0.5);
+  transform: translateY(-1px);
+}
+.btn-orange-glow:active {
+  transform: translateY(0);
 }
