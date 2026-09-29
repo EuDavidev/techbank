@@ -1,9 +1,8 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
 
 @theme inline {
-  --font-sans: var(--font-sora), 'Sora', system-ui, -apple-system, sans-serif;
-  --font-sora: var(--font-sora), 'Sora', system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-sora), 'Sora', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sora: var(--font-sora), 'Sora', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 :root {
