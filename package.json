@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node test/regrasDeNegocio.test.mjs"
+    "test": "node test/regrasDeNegocio.test.mjs",
+    "test:manual": "node test/executarTestesManuais.mjs",
+    "test:all": "node test/regrasDeNegocio.test.mjs && node test/executarTestesManuais.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

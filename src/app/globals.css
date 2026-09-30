@@ -24,6 +24,8 @@
 
 html {
   color-scheme: dark;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -35,6 +37,8 @@ body {
   background-attachment: fixed;
   color: #f1f5f9;
   min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
   font-family: var(--font-sora), 'Sora', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -37,7 +37,7 @@ export function Dialog({ open, onClose, title, description, children, maxWidth =
       {/* Dialog Content */}
       <div
         className={cn(
-          'relative w-full rounded-2xl border border-slate-800 bg-[#0f172a] p-6 shadow-2xl z-10 text-slate-100',
+          'relative w-full max-h-[90vh] overflow-y-auto rounded-2xl border border-slate-800 bg-[#0f172a] p-4 sm:p-6 shadow-2xl z-10 text-slate-100',
           maxWidth
         )}
       >

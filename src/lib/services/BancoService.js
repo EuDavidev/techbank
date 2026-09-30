@@ -1,87 +1,88 @@
 import { ContaBancaria } from '../models/ContaBancaria.js';
 
 /**
- * TECHBANK - BancoService
- * 
- * Camada de Serviço que orquestra as operações bancárias, gerencia as contas
- * em memória e oferece uma interface limpa e expansível (RN10).
+ * TECHBANK — BancoService
+ *
+ * Camada de serviço simplificada para facilitar a realização de testes
+ * manuais na disciplina de Teste de Sistemas.
+ * Contas com IDs simples ("1", "2", "3") e valores arredondados para validação rápida.
  */
 export class BancoService {
   constructor() {
     this.contas = new Map();
+    this.proximoId = 4;
     this.inicializarContasExemplo();
   }
 
   /**
-   * Inicializa dados de demonstração para exibição imediata
+   * Inicializa contas de teste simples e previsíveis para testes manuais
    */
   inicializarContasExemplo() {
     this.contas.clear();
+    this.proximoId = 4;
 
-    // Conta 1: Ana Carolina Silva
+    // Conta 1: ID 1 com Saldo R$ 1.000,00 (ideal para testar saques e depósitos)
     const conta1 = new ContaBancaria({
-      id: 'TB-102938',
-      titular: 'Ana Carolina Silva',
-      saldoInicial: 2500.0,
+      id: '1',
+      titular: 'João Silva',
+      saldoInicial: 1000.0,
       tipo: 'CORRENTE',
     });
-    // Adiciona algumas transações simuladas para enriquecer o extrato
-    conta1.depositar(750.0, 'Transferência PIX recebida');
-    conta1.sacar(200.0, 'Saque terminal 24h');
-    this.contas.set(conta1.id, conta1);
 
-    // Conta 2: Carlos Eduardo Mendes
+    // Conta 2: ID 2 com Saldo R$ 500,00 (ideal para testar transferências entre contas)
     const conta2 = new ContaBancaria({
-      id: 'TB-405921',
-      titular: 'Carlos Eduardo Mendes',
-      saldoInicial: 12000.5,
-      tipo: 'PREMIUM',
+      id: '2',
+      titular: 'Maria Santos',
+      saldoInicial: 500.0,
+      tipo: 'POUPANCA',
     });
-    conta2.depositar(3500.0, 'Depósito de bonificação');
-    conta2.sacar(1500.0, 'Pagamento fornecedor');
-    this.contas.set(conta2.id, conta2);
 
-    // Conta 3: Mariana Oliveira Costa
+    // Conta 3: ID 3 com Saldo R$ 200,00
     const conta3 = new ContaBancaria({
-      id: 'TB-783912',
-      titular: 'Mariana Oliveira Costa',
-      saldoInicial: 450.0,
-      tipo: 'UNIVERSITARIA',
+      id: '3',
+      titular: 'Carlos Oliveira',
+      saldoInicial: 200.0,
+      tipo: 'CORRENTE',
     });
+
+    this.contas.set(conta1.id, conta1);
+    this.contas.set(conta2.id, conta2);
     this.contas.set(conta3.id, conta3);
   }
 
   /**
    * Lista todas as contas cadastradas
-   * @returns {Array<Object>}
    */
   listarContas() {
     return Array.from(this.contas.values()).map((conta) => conta.toJSON());
   }
 
   /**
-   * Busca uma conta pelo ID
-   * @param {string} id 
-   * @returns {ContaBancaria}
+   * Busca conta pelo identificador (aceita string ou número)
    */
   buscarConta(id) {
-    const conta = this.contas.get(id);
+    const idStr = String(id).trim();
+    // Busca direta ou tolerante (ex: "1" ou "TB-1")
+    let conta = this.contas.get(idStr);
     if (!conta) {
-      throw new Error(`Conta de identificador "${id}" não foi encontrada no TechBank.`);
+      // Tenta localizar por id numérico simples se fornecido com prefixo
+      const cleanId = idStr.replace(/^TB-0*/i, '');
+      conta = this.contas.get(cleanId);
+    }
+
+    if (!conta) {
+      throw new Error(`Conta com ID "${id}" não foi encontrada.`);
     }
     return conta;
   }
 
   /**
-   * RN01 & RN02: Cria uma nova conta bancária no sistema
-   * @param {Object} dados
-   * @param {string} dados.titular
-   * @param {number|string} dados.saldoInicial
-   * @param {string} [dados.tipo]
-   * @returns {Object} Dados da conta criada
+   * RN01 & RN02: Cria uma nova conta bancária
    */
   criarConta({ titular, saldoInicial, tipo = 'CORRENTE' }) {
+    const id = String(this.proximoId++);
     const novaConta = new ContaBancaria({
+      id,
       titular,
       saldoInicial,
       tipo,
@@ -97,8 +98,7 @@ export class BancoService {
   }
 
   /**
-   * RN03: Consulta o saldo da conta
-   * @param {string} idConta 
+   * RN03: Consulta de saldo
    */
   consultarSaldo(idConta) {
     const conta = this.buscarConta(idConta);
@@ -111,10 +111,7 @@ export class BancoService {
   }
 
   /**
-   * RN04 & RN05 & RN09: Realiza depósito
-   * @param {string} idConta 
-   * @param {number|string} valor 
-   * @param {string} [descricao] 
+   * RN04 & RN05: Depósito
    */
   depositar(idConta, valor, descricao) {
     const conta = this.buscarConta(idConta);
@@ -126,10 +123,7 @@ export class BancoService {
   }
 
   /**
-   * RN06 & RN07 & RN08 & RN09: Realiza saque
-   * @param {string} idConta 
-   * @param {number|string} valor 
-   * @param {string} [descricao] 
+   * RN06, RN07 & RN08: Saque
    */
   sacar(idConta, valor, descricao) {
     const conta = this.buscarConta(idConta);
@@ -141,29 +135,33 @@ export class BancoService {
   }
 
   /**
-   * Extensão futura (RN10): Transferência entre contas
-   * Demonstra que a arquitetura suporta novas regras de negócio facilmente.
-   * @param {string} idOrigem 
-   * @param {string} idDestino 
-   * @param {number|string} valor 
+   * RN10: Transferência simples entre duas contas
    */
   transferir(idOrigem, idDestino, valor) {
-    if (idOrigem === idDestino) {
+    const origId = String(idOrigem).trim();
+    const destId = String(idDestino).trim();
+
+    if (origId === destId) {
       throw new Error('RN10: Não é possível transferir para a mesma conta.');
     }
 
-    const contaOrigem = this.buscarConta(idOrigem);
-    const contaDestino = this.buscarConta(idDestino);
+    const valorNum = Number(valor);
+    if (isNaN(valorNum) || valorNum <= 0) {
+      throw new Error('RN05: O valor da transferência deve ser maior que zero.');
+    }
 
-    // Efetua saque na origem
-    const resSaque = contaOrigem.sacar(valor, `Transferência para ${contaDestino.titular} (${contaDestino.id})`);
+    const contaOrigem = this.buscarConta(origId);
+    const contaDestino = this.buscarConta(destId);
 
-    // Efetua depósito no destino
-    contaDestino.depositar(valor, `Transferência recebida de ${contaOrigem.titular} (${contaOrigem.id})`);
+    // Efetua o débito na conta de origem (valida saldo e valor)
+    contaOrigem.sacar(valorNum, `Transferência enviada para ${contaDestino.titular} (Conta ${contaDestino.id})`);
+
+    // Efetua o crédito na conta de destino
+    contaDestino.depositar(valorNum, `Transferência recebida de ${contaOrigem.titular} (Conta ${contaOrigem.id})`);
 
     return {
       sucesso: true,
-      mensagem: `Transferência de R$ ${Number(valor).toFixed(2)} realizada com sucesso de ${contaOrigem.titular} para ${contaDestino.titular}!`,
+      mensagem: `Transferência de R$ ${valorNum.toFixed(2)} realizada com sucesso de ${contaOrigem.titular} para ${contaDestino.titular}!`,
       saldoOrigem: contaOrigem.saldo,
       contaOrigem: contaOrigem.toJSON(),
       contaDestino: contaDestino.toJSON(),
@@ -171,7 +169,7 @@ export class BancoService {
   }
 
   /**
-   * Obtém métricas e consolidação do banco
+   * Métricas básicas do sistema
    */
   obterMetricas() {
     let totalCustodia = 0;
@@ -190,19 +188,17 @@ export class BancoService {
   }
 
   /**
-   * Restaura contas para o estado padrão
+   * Restaura o sistema para as contas de teste iniciais
    */
   resetar() {
     this.inicializarContasExemplo();
-    return { sucesso: true, mensagem: 'Dados reinicializados com sucesso.' };
+    return { sucesso: true, mensagem: 'Dados reinicializados para os valores padrão de teste.' };
   }
 }
 
-// Padrão Singleton para manter estado em memória no servidor Node.js
+// Padrão Singleton para manter estado em memória durante o desenvolvimento
 const globalForBanco = globalThis;
-if (!globalForBanco.bancoServiceInstance) {
-  globalForBanco.bancoServiceInstance = new BancoService();
-}
+globalForBanco.bancoServiceInstance = new BancoService();
 
 export const bancoService = globalForBanco.bancoServiceInstance;
 export default bancoService;
